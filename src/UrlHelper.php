@@ -157,7 +157,12 @@ class UrlHelper
 
         $name   = $result->getMatchedRouteName();
         $params = array_merge($result->getMatchedParams(), $params);
-        return $this->router->generateUri($name, $params);
+
+        if ($this->basePath === '/') {
+            return $this->router->generateUri($name, $params);
+        }
+
+        return $this->basePath . $this->router->generateUri($name, $params);
     }
 
     /**

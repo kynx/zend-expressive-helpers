@@ -165,4 +165,19 @@ class UrlHelperTest extends TestCase
         $helper->setBasePath('/prefix');
         $this->assertEquals('/prefix/foo/baz', $helper('foo', ['bar' => 'baz']));
     }
+
+    public function testBasePathIsPrependedWhenNoRouteProvided()
+    {
+        $result = $this->prophesize(RouteResult::class);
+        $result->isFailure()->willReturn(false);
+        $result->getMatchedRouteName()->willReturn('foo');
+        $result->getMatchedParams()->willReturn([]);
+        $result = $result->reveal();
+
+        $this->router->generateUri('foo', [])->willReturn('/foo');
+        $helper = $this->createHelper();
+        $helper->setRouteResult($result);
+        $helper->setBasePath('/prefix');
+        $this->assertEquals('/prefix/foo', $helper());
+    }
 }
